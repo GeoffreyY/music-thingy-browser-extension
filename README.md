@@ -34,3 +34,5 @@ query {
   }
 }
 ```
+
+To look at the code hosted on heroku, try doing `git clone https://git.heroku.com/jp-discord-music-bot-test.git`. You'll need to have git installed.
