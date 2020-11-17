@@ -268,7 +268,7 @@ async function submit() {
     }
 
     // similarly create tag with name if doesn't exist
-    tag_payload = "mutataion {"
+    tag_payload = "mutation {"
     i = 0;
     tags = [];
     $('[id^=tag_inner]').each(function () { tags.push($(this).text()) });
@@ -284,7 +284,8 @@ async function submit() {
         tag_ids.push(tag_res[k].tags[0].tagId);
     }
 
-    console.log(artist_ids);
+    console.log('artist_ids', artist_ids);
+    console.log('tag_ids', tag_ids);
     // here's the alt song names
     alt_song_names = [];
     $('[id^=alt_song]').each(function () { alt_song_names.push($(this).text()) });
@@ -294,7 +295,7 @@ async function submit() {
         song_payload += ",altNames:[" + alt_song_names.map((x) => encode_string(x)).join(',') + "]"
     }
     if (tag_ids.length > 0) {
-        song_payload += ",tagIds:[" + tag_ids.map((x) => encode_string(x)) + "]"
+        song_payload += ",tagIds:[" + tag_ids.join(',') + "]"
     }
     song_payload += "){song{songId}}}"
     song_res = await query_graphql(song_payload, 'POST');
