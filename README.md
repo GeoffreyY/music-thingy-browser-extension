@@ -2,7 +2,9 @@
 
 Warning: this is under active development and most probably will break very frequently.
 
-This is the browser extension for my music database thingy.
+This is the browser extension for my music database thingy. When listening to music / video on youtube, spotify or other websites (note: to be implmented), you can click on the extension, and extract the information about the song (aka song name, artist name etc) and submit them to the database. You can also tag, rate and comment on the song.
+
+TODO: make extension autoamatically extract information instead of manually.
 
 To use this, download (or git clone) this repo into a folder, then:
 
