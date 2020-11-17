@@ -19,7 +19,7 @@ async function parse(tab) {
     domain = new URL(tab.url).hostname;
     if (domain == "www.youtube.com") {
         // check if link already exists in database
-        payload = "{links(filters:{link:" + JSON.stringify(tab.url) + "}) { edges{ node{ song{ songId name artists{ edges{ node{ name } } } } } } }}";
+        payload = "query{links(filters:{link:" + JSON.stringify(tab.url) + "}) { edges{node{song{ songId name artists{edges{node{ name }}} tags{edges{node{ name }}} }}} } }";
         console.log(payload);
         existing = await query_graphql(payload);
 
@@ -31,13 +31,19 @@ async function parse(tab) {
             song = existing.links.edges[0].node.song;
             song_name = song.name;
             artists = song.artists.edges.map((o) => o.node.name);
+            tags = song.tags.edges.map((o) => o.node.name);
             $('#song_name').text(song_name);
             $('#artist_name_inner0').text(artists.shift());
+            remove_tag_field(0)();
             for (artist_name of artists) {
                 add_artist_field();
                 $('#artist_name_inner' + (artist_field_num - 1)).text(artist_name);
             }
             $('#link').text(tab.url);
+            for (tag_name of tags) {
+                add_tag_field();
+                $('#tag_inner' + (tag_field_num - 1)).text(tag_name);
+            }
             $('#goto_review').show();
             document.getElementById("goto_review").addEventListener("click", (() => rate(song.songId)));
         } else {
@@ -385,7 +391,7 @@ function add_tag_field() {
     console.log("adding tag", tag_field_num);
     // don't write over the div that has the add button
     new_div = document.createElement('div');
-    new_div.innerHTML = "<div id=\"tag_inner" + tag_field_num + "\" contenteditable=\"true\" style=\"display: inline-block; color: #dddddd\">New tag " + tag_field_num + "</div><span id=\"remove_tag" + tag_field_num + "\"class=\"remove-button-div\">&nbsp;-&nbsp;</span>";
+    new_div.innerHTML = "<div id=\"tag_inner" + tag_field_num + "\" contenteditable=\"true\" style=\"display: inline-block; color: #dddddd\">New_tag_" + tag_field_num + "</div><span id=\"remove_tag" + tag_field_num + "\"class=\"remove-button-div\">&nbsp;-&nbsp;</span>";
     new_div.setAttribute('id', 'tag_wrapper_inner' + tag_field_num);
 
     document.getElementById('tag_wrapper').appendChild(new_div);
@@ -419,6 +425,7 @@ async function rate(song_id) {
     $('#song_name_wrapper').remove();
     $('#artist_name_wrapper').remove();
     $('#link_wrapper').remove();
+    $('#tag_wrapper').remove();
     $('#submit').remove();
     $('#goto_review').remove();
     $('#review_wrapper').show();
